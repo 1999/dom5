@@ -1,3 +1,18 @@
+Object.prototype.forEachPropertyIn = function(fn, thisArg) {
+	var prop,
+		callbackThisArg = (thisArg === undefined) ? this : thisArg,
+		res;
+
+	for (prop in this) {
+		if (this.hasOwnProperty(prop)) {
+			res = fn.call(callbackThisArg, prop, this[prop], this);
+			if (res === false) {
+				break;
+			}
+		}
+	}
+};
+
 (function() {
 	var createdPrototypes = {}, // созданные прототипы вида (NODENAME1 => proto1, NODENAME2 => proto2, ...)
 		HTMLExtendedElement;
