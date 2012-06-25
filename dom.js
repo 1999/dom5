@@ -1,18 +1,3 @@
-Object.prototype.forEachPropertyIn = function(fn, thisArg) {
-	var prop,
-		callbackThisArg = (thisArg === undefined) ? this : thisArg,
-		res;
-
-	for (prop in this) {
-		if (this.hasOwnProperty(prop)) {
-			res = fn.call(callbackThisArg, prop, this[prop], this);
-			if (res === false) {
-				break;
-			}
-		}
-	}
-};
-
 (function() {
 	var createdPrototypes = {}, // созданные прототипы вида (NODENAME1 => proto1, NODENAME2 => proto2, ...)
 		HTMLExtendedElement;
@@ -72,14 +57,14 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 				matchesSelectorFn = (this.webkitMatchesSelector || this.matchesSelector);
 
 			if (selector.charAt(0) === ">") {
-				elems = [].filter.call(this.childNodes, function(elem) {
+				elems = Array.prototype.filter.call(this.childNodes, function(elem) {
 					return matchesSelectorFn.call(elem, selector.substr(1));
 				});
 			} else {
 				elems = this.querySelectorAll(selector);
 			}
 
-			[].map.call(elems, function(elem, index) {
+			Array.prototype.map.call(elems, function(elem, index) {
 				var upperCasedNodeName;
 
 				if ((elem instanceof HTMLExtendedElement) === false) {
@@ -105,7 +90,7 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 			var matchesSelectorFn = (this.webkitMatchesSelector || this.matchesSelector);
 
 			if (selector.charAt(0) === ">") {
-				return [].filter.call(this.childNodes, function(elem) {
+				return Array.prototype.filter.call(this.childNodes, function(elem) {
 					return matchesSelectorFn.call(elem, selector.substr(1));
 				}).length;
 			} else {
@@ -114,7 +99,7 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 		};
 
 		this.clone = function(deep) {
-			var elem = this.cloneNode.apply(this, [].slice.call(arguments, 0)),
+			var elem = this.cloneNode.apply(this, Array.prototype.slice.call(arguments, 0)),
 				upperCasedNodeName;
 			
 			if ((elem instanceof HTMLExtendedElement) === false) {
@@ -272,6 +257,8 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 		};
 
 		this.data = function(key, value) {
+			var prop;
+
 			if (value === undefined && typeof key === "string") {
 				return (this.dataset[key] || "");
 			}
@@ -285,9 +272,11 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 				return this;
 			}
 
-			key.forEachPropertyIn(function(prop, value) {
-				this.dataset[prop] = value;
-			}, this);
+			for (prop in key) {
+				if (key.hasOwnProperty(prop)) {
+					this.dataset[prop] = key[prop];
+				}
+			}
 			
 			return this;
 		};
@@ -298,18 +287,21 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 		};
 
 		this.clearData = function(exceptions) {
-			var listExcept = (arguments.length && exceptions instanceof Array) ? exceptions : [exceptions];
+			var listExcept = (arguments.length && exceptions instanceof Array) ? exceptions : [exceptions],
+				prop;
 
-			this.dataset.forEachPropertyIn(function(key) {
-				if (listExcept.indexOf(key) === -1) {
-					delete this.dataset[key];
+			for (prop in this.dataset) {
+				if (listExcept.indexOf(prop) === -1) {
+					delete this.dataset[prop];
 				}
-			}, this);
+			}
 
 			return this;
 		};
 
 		this.attr = function(key, value) {
+			var prop;
+
 			if (value === undefined && typeof key === "string") {
 				return this.getAttribute(key);
 			}
@@ -319,9 +311,11 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 				return this;
 			}
 
-			key.forEachPropertyIn(function(prop, value) {
-				this.setAttribute(prop, value);
-			}, this);
+			for (prop in key) {
+				if (key.hasOwnProperty(prop)) {
+					this.setAttribute(prop, key[prop]);
+				}
+			}
 			
 			return this;
 		};
@@ -332,6 +326,8 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 		};
 
 		this.css = function(key, value) {
+			var prop;
+
 			if (value === undefined && typeof key === "string") {
 				return this.style[key];
 			}
@@ -341,9 +337,11 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 				return this;
 			}
 
-			key.forEachPropertyIn(function(prop, value) {
-				this.style[prop] = value;
-			}, this);
+			for (prop in key) {
+				if (key.hasOwnProperty(prop)) {
+					this.style[prop] = key[prop];
+				}
+			}
 			
 			return this;
 		};
@@ -373,7 +371,7 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 		};
 
 		this.clearClassList = function(exceptions) {
-			var classList = [].slice.call(this.classList, 0),
+			var classList = Array.prototype.slice.call(this.classList, 0),
 				listExcept = (arguments.length && exceptions instanceof Array) ? exceptions : [exceptions];
 
 			classList.forEach(function(className) {
@@ -432,7 +430,7 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 			}
 
 			if (matchChildren) {
-				matchChildrenElems = [].filter.call(rootElem.childNodes, function(elem) {
+				matchChildrenElems = Array.prototype.filter.call(rootElem.childNodes, function(elem) {
 					return matchesSelectorFn.call(elem, selector.substr(1));
 				});
 			}
@@ -556,7 +554,7 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 			var elems = this.querySelectorAll(selector),
 				output;
 
-			[].map.call(elems, function(elem, index) {
+			Array.prototype.map.call(elems, function(elem, index) {
 				var upperCasedNodeName;
 
 				if ((elem instanceof HTMLExtendedElement) === false) {
@@ -608,6 +606,7 @@ Object.prototype.forEachPropertyIn = function(fn, thisArg) {
 	Image.prototype = new HTMLExtendedElement(Image.prototype);
 	Audio.prototype = new HTMLExtendedElement(Audio.prototype);
 
+	// расширяем базовый объект body
 	document.addEventListener("DOMContentLoaded", function() {
 		document.extend(document.body);
 	}, false);
