@@ -7,7 +7,7 @@ DOM5 creates a mixin in the prototype chains of the DOM elements & the document 
 before: DOMNode -> ... -> HTMLElement.prototype -> Element.prototype -> ...
 after: DOMNode -> ... -> HTMLElement.prototype -> {DOM5} -> Element.prototype -> ...
 ```
-After this you can access all methods of HTMLExtendedElement.prototype in context of the current DOMNode at the same time with using the native DOM elements' stuff like "appendChild", "style", "addEventListener" etc.
+After this you can access all methods of DOM5 in context of the current DOMNode at the same time with using the native DOM elements' stuff like "appendChild", "style", "addEventListener" etc. For the list of these methods look into [lib/dom5.js](https://github.com/1999/dom5/blob/master/lib/dom5.js), it's really simple.
 
 # I don't like mixins in the prototype chains
 You can also use [DOM2](http://github.com/1999/dom2) library which has a similar syntax and adds "$" (get DOM element) and "$$" (get all DOM elements) functions to window. Using these functions you can get objects associated with the DOM nodes (HTMLElements or NodeLists).
